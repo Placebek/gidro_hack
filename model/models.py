@@ -51,12 +51,21 @@ class WaterType(Base):
     objects = relationship("Object", back_populates="water_type")
 
 
+class Region(Base):
+    __tablename__ = "regions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    region = Column(String, nullable=False)
+
+    objects = relationship("Object", back_populates="region")
+
+
 class Object(Base):
     __tablename__ = "objects"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    region = Column(String, nullable=True)
+    region_id = Column(Integer, ForeignKey("regions.id"), nullable=False)
     resource_type_id = Column(Integer, ForeignKey("resource_types.id"), nullable=True)
     water_type_id = Column(Integer, ForeignKey("water_types.id"), nullable=True)
     fauna = Column(Boolean, default=False)
@@ -66,5 +75,6 @@ class Object(Base):
     longitude = Column(DECIMAL(10, 6), nullable=True)
     pdf_url = Column(Text, default="")
 
+    region = relationship("Region", back_populates="objects")
     resource_type = relationship("ResourceType", back_populates="objects")
     water_type = relationship("WaterType", back_populates="objects")

@@ -21,6 +21,7 @@ export default function App() {
       <div className="min-h-screen bg-linear-to-br from-cyan-50 via-blue-50 to-teal-50">
         <Header />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/objects" element={<ObjectsPage />} />

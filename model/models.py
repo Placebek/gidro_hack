@@ -65,7 +65,7 @@ class Object(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    region_id = Column(Integer, ForeignKey("regions.id"), nullable=False)
+    region_id = Column(Integer, ForeignKey("regions.id"), default=1)
     resource_type_id = Column(Integer, ForeignKey("resource_types.id"), nullable=True)
     water_type_id = Column(Integer, ForeignKey("water_types.id"), nullable=True)
     fauna = Column(Boolean, default=False)
@@ -73,8 +73,14 @@ class Object(Base):
     technical_condition = Column(Integer, default=5)
     latitude = Column(DECIMAL(10, 6), nullable=True)
     longitude = Column(DECIMAL(10, 6), nullable=True)
+    danger_level_cm = Column(Integer, nullable=True)
+    actual_level_cm = Column(Integer, nullable=True)
+    actual_discharge_m3s = Column(Integer, nullable=True)
+    water_temperature_C = Column(Integer, nullable=True)
+    water_object_code = Column(String, nullable=True)
     pdf_url = Column(Text, default="")
 
     region = relationship("Region", back_populates="objects")
     resource_type = relationship("ResourceType", back_populates="objects")
     water_type = relationship("WaterType", back_populates="objects")
+

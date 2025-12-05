@@ -8,10 +8,11 @@ import Home from '../src/pages/Home';
 // import { Report } from './pages/Report';
 // import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/main/Header';
+import Footer from './components/main/Footer';
 import { WaterResources } from "./components/water_resourses/WaterResourcesPage";
-
+import ObjectsPage from './pages/ObjectsPage';
 
 export default function App() {
   return (
@@ -21,7 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/objects" element={<WaterResources />} /> 
+          <Route path="/" element={<Home />} />
           <Route
             path="/monitor"
             element={
@@ -55,7 +56,9 @@ export default function App() {
             }
           />
           <Route path="*" element=Headerigate to="/" />} /> */}
+          
         </Routes>
+        <Footer />
       </div>
     </AuthProvider>
   );

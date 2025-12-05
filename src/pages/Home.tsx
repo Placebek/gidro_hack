@@ -1,8 +1,34 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Sparkles } from 'lucide-react';
+import { Upload, Sparkles, Droplets, BarChart3, Shield, MapPin, TriangleAlert } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+    const router = useNavigate();
+    
+    const features = [
+        {
+            icon: <Droplets className="w-8 h-8" />,
+            title: "Мониторинг в реальном времени",
+            desc: "Данные обновляются каждые 6 часов с датчиков и спутников",
+        },
+        {
+            icon: <TriangleAlert  className="w-8 h-8" />,
+            title: "Ранняя система оповещения",
+            desc: "Автоматические уведомления о рисках затопления и засухи",
+        },
+        {
+            icon: <BarChart3 className="w-8 h-8" />,
+            title: "Аналитика и прогнозы",
+            desc: "Прогнозы уровня воды на 7–30 дней с точностью до 94%",
+        },
+        {
+            icon: <Shield className="w-8 h-8" />,
+            title: "Оценка состояния ГТС",
+            desc: "Автоматическая классификация гидротехнических сооружений",
+        },
+    ];
+
     return (
         <>
             <section
@@ -117,7 +143,6 @@ export default function Home() {
                         Интерактивная ГИС-платформа для мониторинга водных объектов и гидротехнических сооружений республики
                     </p>
                     <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-                        {/* Кнопка "Открыть карту" */}
                         <button
                             style={{
                                 padding: "1rem 2rem",
@@ -131,19 +156,7 @@ export default function Home() {
                                 border: "none",
                                 cursor: "pointer",
                                 boxShadow: "0 10px 15px rgba(43, 128, 255, 0.3)",
-                                transition: "all 0.3s ease",
-                                position: "relative",
-                                overflow: "hidden",
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#1d6ce6";
-                                e.currentTarget.style.transform = "translateY(-3px)";
-                                e.currentTarget.style.boxShadow = "0 15px 25px rgba(43, 128, 255, 0.4)";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#2B80FF";
-                                e.currentTarget.style.transform = "translateY(0)";
-                                e.currentTarget.style.boxShadow = "0 10px 15px rgba(43, 128, 255, 0.3)";
+                                transition: "all 0.3s",
                             }}
                         >
                             <i style={{ marginRight: "0.5rem" }}>
@@ -166,8 +179,6 @@ export default function Home() {
                             </i>
                             Открыть карту
                         </button>
-
-                        {/* Кнопка "Смотреть демо" */}
                         <button
                             style={{
                                 padding: "1rem 2rem",
@@ -180,32 +191,6 @@ export default function Home() {
                                 alignItems: "center",
                                 border: "1px solid #E5E7EB",
                                 cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                position: "relative",
-                                overflow: "hidden",
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#f9fafb";
-                                e.currentTarget.style.borderColor = "#2B80FF";
-                                e.currentTarget.style.color = "#2B80FF";
-                                e.currentTarget.style.transform = "translateY(-2px)";
-                                e.currentTarget.style.boxShadow = "0 8px 20px rgba(43, 128, 255, 0.15)";
-                                // Меняем цвет иконки
-                                const svg = e.currentTarget.querySelector("svg");
-                                if (svg) {
-                                    svg.style.color = "#2B80FF";
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#fff";
-                                e.currentTarget.style.borderColor = "#E5E7EB";
-                                e.currentTarget.style.color = "#4B5563";
-                                e.currentTarget.style.transform = "translateY(0)";
-                                e.currentTarget.style.boxShadow = "none";
-                                const svg = e.currentTarget.querySelector("svg");
-                                if (svg) {
-                                    svg.style.color = "#4B5563";
-                                }
                             }}
                         >
                             <i style={{ marginRight: "0.5rem" }}>
@@ -218,7 +203,7 @@ export default function Home() {
                                     role="img"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 512 512"
-                                    style={{ width: "20px", height: "20px", color: "#4B5563", transition: "color 0.3s ease" }}
+                                    style={{ width: "20px", height: "20px", color: "#4B5563" }}
                                 >
                                     <path
                                         fill="currentColor"
@@ -251,6 +236,90 @@ export default function Home() {
                             <div style={{ fontSize: "0.875rem", color: "#4B5563" }}>Актуальность данных</div>
                         </div>
                     </div>
+                </div>
+            </section>
+            <section className="py-24 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-6">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-16"
+                    >
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                            Почему выбирают ГидроАтлас
+                        </h2>
+                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                            Современные технологии для эффективного управления водными ресурсами
+                        </p>
+                    </motion.div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {features.map((feature, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group"
+                            >
+                                <div className="w-16 h-16 bg-[#2B80FF]/10 rounded-xl flex items-center justify-center text-[#2B80FF] mb-6 group-hover:scale-110 transition-transform">
+                                    {feature.icon}
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                                <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Mini Map Preview */}
+            <section className="py-24 bg-linear-to-b from-white to-gray-50">
+                <div className="max-w-7xl mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                            Готовая интерактивная карта
+                        </h2>
+                        <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+                            Все водные объекты, плотны, каналы и датчики — в одном месте
+                        </p>
+
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="relative rounded-3xl overflow-hidden shadow-2xl cursor-pointer group max-w-5xl mx-auto"
+                            onClick={() => router('/map')}
+                        >
+                            <div className="bg-linear-to-br from-[#2B80FF] to-[#1e40af] h-96 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all" />
+
+                                {/* Заглушка карты (можно заменить на реальное изображение) */}
+                                <div className="absolute inset-0 opacity-20">
+                                    <div className="w-full h-full" style={{
+                                        backgroundImage: "url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200')",
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                    }} />
+                                </div>
+
+                                <div className="relative z-10 text-white">
+                                    <MapPin className="w-20 h-20 mx-auto mb-6" />
+                                    <p className="text-3xl font-bold mb-3">Интерактивная карта Казахстана</p>
+                                    <p className="text-lg opacity-90">Нажмите, чтобы открыть полную версию</p>
+                                </div>
+
+                                <div className="absolute bottom-6 right-6 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                                    <span className="text-white font-medium">Перейти на карту →</span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </section>
         </>

@@ -8,10 +8,11 @@ import Home from '../src/pages/Home';
 // import { Report } from './pages/Report';
 // import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/main/Header';
 import Footer from './components/main/Footer';
 import MapPage from './pages/MapPage';
+import ObjectsPage from './pages/ObjectsPage';
 
 export default function App() {
   return (
@@ -21,6 +22,8 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/objects" element={<ObjectsPage />} />
+
           <Route path="/" element={<Home />} />
           <Route
             path="/monitor"

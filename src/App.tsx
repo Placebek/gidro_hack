@@ -10,6 +10,8 @@ import Home from '../src/pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/main/Header';
+import { WaterResources } from "./components/water_resourses/WaterResourcesPage";
+
 
 export default function App() {
   return (
@@ -17,8 +19,9 @@ export default function App() {
       <div className="min-h-screen bg-linear-to-br from-cyan-50 via-blue-50 to-teal-50">
         <Header />
         <Routes>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/objects" element={<WaterResources />} /> 
           <Route
             path="/monitor"
             element={

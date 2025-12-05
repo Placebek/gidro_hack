@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 export const Header = () => {
   return (
     <header
@@ -113,29 +114,43 @@ export const Header = () => {
           </a>
 
           {["Объекты", "Приоритизация"].map((text) => (
-            <a
-              key={text}
-              href={`#${text === "Объекты" ? "objects" : "prioritization"}-section`}
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: 500,
-                color: "#6B7280",
-                textDecoration: "none",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "#00BFFF";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "#6B7280";
-              }}
-            >
-              {text}
-            </a>
+            text === "Объекты" ? (
+              <Link
+                key={text}
+                to="/objects"
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                  color: "#6B7280",
+                  textDecoration: "none",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#00BFFF")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7280")}
+              >
+                {text}
+              </Link>
+            ) : (
+              <a
+                key={text}
+                href={`#${text === "Приоритизация" ? "prioritization-section" : ""}`}
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                  color: "#6B7280",
+                  textDecoration: "none",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#00BFFF")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6B7280")}
+              >
+                {text}
+              </a>
+            )
           ))}
 
-          {/* Кнопка "Войти" */}
-          <button
+          <Link
+            to="/login"
             style={{
               padding: "0.625rem 1.25rem",
               backgroundColor: "#00BFFF",
@@ -150,6 +165,7 @@ export const Header = () => {
               cursor: "pointer",
               transition: "all 0.3s ease",
               boxShadow: "0 4px 15px rgba(0, 191, 255, 0.3)",
+              textDecoration: "none", // убираем подчеркивание ссылки
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "#00a8e6";
@@ -179,7 +195,7 @@ export const Header = () => {
               />
             </svg>
             Войти
-          </button>
+          </Link>
         </nav>
       </div>
     </header>

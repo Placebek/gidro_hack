@@ -21,6 +21,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.db import get_db
 import logging
 from core.config import settings
+from model.models import User, UserRole
+from sqlalchemy import select
 
 
 logger = logging.getLogger(__name__)
@@ -94,3 +96,30 @@ async def validate_access_token(access_token: str) -> str:
     except Exception as e:
         logger.error(f"Unexpected error during token validation: {str(e)}, token: {access_token[:20]}...")
         raise HTTPException(status_code=401, detail="Invalid token")
+    
+async def get_current_user_id(token: str = Depends(get_access_token), db: AsyncSession = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, settings.TOKEN_SECRET_KEY, algorithms=[settings.TOKEN_ALGORITHM])
+        user_id: str = payload.get("sub")
+        exp = payload.get("exp")
+
+        if not user_id or (exp and exp < datetime.utcnow().timestamp()):
+            raise HTTPException(status_code=401, detail="Недействительный или истёкший токен")
+
+        return int(user_id)
+    except JWTError as e:
+        logger.error(f"JWT error: {e}")
+        raise HTTPException(status_code=401, detail="Недействительный токен")
+    
+async def require_expert(user_id: int = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
+    
+    if user.role != UserRole.expert:
+        logger.warning(f"User {user_id} ({user.role}) tried to access expert-only endpoint")
+        raise HTTPException(status_code=403, detail="Доступ запрещён: требуется роль эксперта")
+    
+    return user  

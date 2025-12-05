@@ -23,12 +23,13 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=False)
+    username = Column(String, unique=True, nullable=False, index=True)
     password = Column(Text, nullable=False)
     role = Column(
         SAEnum(UserRole, name="user_role_enum"),
         nullable=False,
-        default=UserRole.guest
+        default=UserRole.guest,
+        server_default="guest"
     )
 
 

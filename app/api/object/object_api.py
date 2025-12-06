@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.object.commands.forecast_pdf import generate_forecast_pdf
 from app.api.object.commands.object_command import bll_create_object, bll_delete_object, bll_get_object_full, bll_get_objects, bll_update_object
 from app.api.object.schemas.update import ObjectUpdate
 from database.db import get_db
@@ -132,3 +133,11 @@ async def get_object_full(
     db: AsyncSession = Depends(get_db)
 ):
     return await bll_get_object_full(obj_id, db)
+
+
+@router.get("/{obj_id}/forecast-2025-pdf")
+async def forecast_pdf(obj_id: int, db: AsyncSession = Depends(get_db)):
+    obj = await bll_get_object_full(obj_id, db)
+    pdf = generate_forecast_pdf(obj.dict(by_alias=True))
+    return StreamingResponse(pdf, media_type="application/pdf",
+                            headers={"Content-Disposition": f"attachment; filename=forecast_2025_{obj_id}.pdf"})

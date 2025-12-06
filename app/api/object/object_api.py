@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.object.commands.object_command import bll_create_object, bll_delete_object, bll_get_object_full, bll_get_objects, bll_update_object
 from app.api.object.schemas.update import ObjectUpdate
 from database.db import get_db
 from app.api.object.schemas.create import ObjectCreate
-from app.api.object.schemas.response import ObjectResponse, PaginatedResponse, ObjectDetailResponse
+from app.api.object.schemas.response import ObjectFullResponse, ObjectResponse, PaginatedResponse, ObjectDetailResponse
 from app.api.object.schemas.filters import ObjectFilters
-from app.api.object.commands.object_command import bll_create_object, bll_delete_object, bll_get_objects, bll_search_objects, bll_update_object
 from model.models import Object
 from utils.context_utils import require_expert
 from sqlalchemy import select
@@ -40,47 +40,47 @@ async def get_objects(
     return await bll_get_objects(filters, db)
 
 
-@router.get("/{obj_id}", response_model=ObjectDetailResponse, summary="Выводить обьект по id")
-async def get_object_by_id(
-    obj_id: int,
-    db: AsyncSession = Depends(get_db),
-):
-    result = await db.execute(
-        select(Object)
-        .options(
-            selectinload(Object.region),
-            selectinload(Object.resource_type),
-            selectinload(Object.water_type)
-        )
-        .where(Object.id == obj_id)
-    )
-    obj = result.scalar_one_or_none()
-    if not obj:
-        raise HTTPException(404, "Объект не найден")
+# @router.get("/{obj_id}", response_model=ObjectDetailResponse, summary="Выводить обьект по id")
+# async def get_object_by_id(
+#     obj_id: int,
+#     db: AsyncSession = Depends(get_db),
+# ):
+#     result = await db.execute(
+#         select(Object)
+#         .options(
+#             selectinload(Object.region),
+#             selectinload(Object.resource_type),
+#             selectinload(Object.water_type)
+#         )
+#         .where(Object.id == obj_id)
+#     )
+#     obj = result.scalar_one_or_none()
+#     if not obj:
+#         raise HTTPException(404, "Объект не найден")
 
-    return ObjectDetailResponse(
-        id=obj.id,                                      
-        name=obj.name,                                  
-        region=obj.region.region,
-        resource_type=obj.resource_type.name if obj.resource_type else None,
-        water_type=obj.water_type.name if obj.water_type else None,
-        fauna=obj.fauna,
-        technical_condition=obj.technical_condition,
-        passport_date=obj.passport_date,
-        latitude=float(obj.latitude) if obj.latitude else None,
-        longitude=float(obj.longitude) if obj.longitude else None,
-        danger_level_cm=obj.danger_level_cm,
-        actual_level_cm=obj.actual_level_cm,
-        actual_discharge_m3s=obj.actual_discharge_m3s,
-        water_temperature_C=obj.water_temperature_C,
-        water_object_code=obj.water_object_code,
-        pdf_url=obj.pdf_url or "",
-        is_dangerous=(
-            obj.actual_level_cm is not None and
-            obj.danger_level_cm is not None and
-            obj.actual_level_cm >= obj.danger_level_cm
-        )
-    )
+#     return ObjectDetailResponse(
+#         id=obj.id,                                      
+#         name=obj.name,                                  
+#         region=obj.region.region,
+#         resource_type=obj.resource_type.name if obj.resource_type else None,
+#         water_type=obj.water_type.name if obj.water_type else None,
+#         fauna=obj.fauna,
+#         technical_condition=obj.technical_condition,
+#         passport_date=obj.passport_date,
+#         latitude=float(obj.latitude) if obj.latitude else None,
+#         longitude=float(obj.longitude) if obj.longitude else None,
+#         danger_level_cm=obj.danger_level_cm,
+#         actual_level_cm=obj.actual_level_cm,
+#         actual_discharge_m3s=obj.actual_discharge_m3s,
+#         water_temperature_C=obj.water_temperature_C,
+#         water_object_code=obj.water_object_code,
+#         pdf_url=obj.pdf_url or "",
+#         is_dangerous=(
+#             obj.actual_level_cm is not None and
+#             obj.danger_level_cm is not None and
+#             obj.actual_level_cm >= obj.danger_level_cm
+#         )
+#     )
 
 
 @router.get("/{obj_id}/passport-pdf", summary="Скачать паспорт обьекта")
@@ -124,3 +124,11 @@ async def delete_object(
 ):
     result = await bll_delete_object(obj_id, db, current_user)
     return result
+
+
+@router.get("/{obj_id}", response_model=ObjectFullResponse, summary="Полная информация об объекте в формате фронтенда")
+async def get_object_full(
+    obj_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    return await bll_get_object_full(obj_id, db)

@@ -9,6 +9,9 @@ from sqlalchemy import (
     Boolean, 
     DECIMAL, 
     Enum as SAEnum,
+    Time,
+    UniqueConstraint,
+    BigInteger,
 )
 from sqlalchemy.orm import relationship
 from database.db import Base
@@ -84,6 +87,7 @@ class Object(Base):
     region = relationship("Region", back_populates="objects")
     resource_type = relationship("ResourceType", back_populates="objects")
     water_type = relationship("WaterType", back_populates="objects")
+    histories = relationship("WaterHistory", back_populates="object")
 
 
 class WaterClass(Base):
@@ -122,3 +126,46 @@ class Features(Base):
     DAM_TYPE = Column(String, nullable=True)
     INSTREAM = Column(String, nullable=True)
     date = Column(Date, nullable=True)
+
+
+class History(Base):
+    __tablename__ = "histories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=True)
+    time = Column(Time, nullable=True)
+    level_cm = Column(Integer, nullable=True)
+    discharge_m3s = Column(Float, nullable=True)
+    temperature_C = Column(Float, nullable=True)
+    status1 = Column(BigInteger, nullable=True)
+    status2 = Column(BigInteger, nullable=True)
+
+    water_links = relationship("WaterHistory", back_populates="history")
+
+
+class Group(Base):
+    __tablename__ = "groups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    number = Column(Integer, nullable=True)
+    code = Column(Integer, nullable=True)
+    text = Column(Text, nullable=True)
+
+    water_histories = relationship("WaterHistory",back_populates="group")
+
+    __table_args__ = (
+        UniqueConstraint('number', 'code', name='uix_group_number_code'),
+    )
+
+
+class WaterHistory(Base):
+    __tablename__ = "water_histories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    object_id = Column(Integer, ForeignKey("objects.id"), nullable=False)
+    history_id = Column(Integer, ForeignKey("histories.id"), nullable=False)
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
+
+    object = relationship("Object", back_populates="histories")
+    history = relationship("History", back_populates="water_links")
+    group = relationship("Group", back_populates="water_histories")

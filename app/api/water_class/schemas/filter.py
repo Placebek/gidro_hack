@@ -1,4 +1,4 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from pydantic import BaseModel, Field
 
 
@@ -26,3 +26,24 @@ class WaterClassFilter(BaseModel):
     
     skip: Optional[int] = Field(0, ge=0)
     limit: Optional[int] = Field(100, ge=1, le=1000)
+
+
+class ParameterItem(BaseModel):
+    index: Optional[str] = None
+    parameter: str
+    unit: Optional[str] = None
+    concentration: Optional[float] = None
+    background: Optional[float] = None
+
+class WaterClassGeoResponse(BaseModel):
+    id: int
+    lat: float
+    lng: float
+    description: Optional[str] = None
+    water_class: Optional[int] = None
+    location_info: Optional[str] = None
+    purpose: List[str] = []
+    fauna: List[str] = []
+    parameters: List[ParameterItem] = []
+
+    model_config = {"from_attributes": True, "arbitrary_types_allowed": True}

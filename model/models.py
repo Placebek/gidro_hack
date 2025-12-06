@@ -102,3 +102,23 @@ class WaterClass(Base):
     unit = Column(String, nullable=True)
     concentration = Column(Float, nullable=True)
     background = Column(Float, nullable=True)
+
+
+class Features(Base):
+    __tablename__ = "features"
+
+    id = Column(Integer, primary_key=True, index=True)
+    CAP_MCM = Column(Float, nullable=True)
+    CAP_MAX = Column(Float, nullable=True)
+    CAP_MIN = Column(Float, nullable=True)
+    AREA_SKM = Column(Float, nullable=True)
+    AREA_MAX = Column(Float, nullable=True)
+    DEPTH_M = Column(Float, nullable=True)
+    CATCH_SKM = Column(Float, nullable=True)
+    DIS_AVG_LS = Column(Float, nullable=True)
+    ELEV_MASL = Column(Float, nullable=True)
+    DAM_HGT_M = Column(Float, nullable=True)
+    DAM_LEN_M = Column(Float, nullable=True)
+    DAM_TYPE = Column(String, nullable=True)
+    INSTREAM = Column(String, nullable=True)
+    date = Column(Date, nullable=True)

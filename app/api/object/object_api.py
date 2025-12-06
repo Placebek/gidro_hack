@@ -9,6 +9,10 @@ from model.models import Object
 from utils.context_utils import require_expert
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from fastapi.responses import FileResponse, StreamingResponse
+from app.api.object.commands.object_pasport import generate_passport_pdf
+from io import BytesIO
+from urllib.parse import quote
 
 
 router = APIRouter()
@@ -75,4 +79,29 @@ async def get_object_by_id(
             obj.danger_level_cm is not None and
             obj.actual_level_cm >= obj.danger_level_cm
         )
+    )
+
+
+@router.get("/{obj_id}/passport-pdf")
+async def get_object_passport_pdf(obj_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Object)
+        .options(selectinload(Object.region))
+        .where(Object.id == obj_id)
+    )
+    obj = result.scalar_one_or_none()
+    if not obj:
+        raise HTTPException(404, "Объект не найден")
+
+    pdf_buffer = generate_passport_pdf(obj)
+
+    filename = f"Паспорт_{obj.name or 'Объект'}_{obj_id}.pdf"
+    encoded = quote(filename)
+
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="passport_{obj_id}.pdf"; filename*=UTF-8\'\'{encoded}'
+        }
     )

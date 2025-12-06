@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from model.models import WaterClass
@@ -65,3 +66,27 @@ async def dal_get_all_water_classes(
 
     result = await db.execute(query)
     return result.scalars().all()
+
+async def dal_update_water_class(wc_id: int, update_data: dict, db: AsyncSession) -> WaterClass:
+    result = await db.execute(select(WaterClass).where(WaterClass.id == wc_id))
+    wc = result.scalar_one_or_none()
+    if not wc:
+        raise HTTPException(status_code=404, detail="Точка анализа не найдена")
+
+    for key, value in update_data.items():
+        if value is not None:
+            setattr(wc, key, value)
+
+    await db.commit()
+    await db.refresh(wc)
+    return wc
+
+
+async def dal_delete_water_class(wc_id: int, db: AsyncSession) -> None:
+    result = await db.execute(select(WaterClass).where(WaterClass.id == wc_id))
+    wc = result.scalar_one_or_none()
+    if not wc:
+        raise HTTPException(status_code=404, detail="Точка анализа не найдена")
+
+    await db.delete(wc)
+    await db.commit()

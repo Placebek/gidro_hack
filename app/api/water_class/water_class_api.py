@@ -1,13 +1,14 @@
 # app/api/water_quality/router.py
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.water_class.schemas.update import WaterClassUpdate
 from database.db import get_db
 from sqlalchemy import select
 from model.models import WaterClass
 from app.api.water_class.schemas.create import WaterClassCreate
 from app.api.water_class.schemas.response import WaterClassResponse, WaterClassDetailResponse
 from app.api.water_class.schemas.filter import WaterClassGeoResponse, WaterClassFilter
-from app.api.water_class.commands.water_class_command import bll_create_water_class
+from app.api.water_class.commands.water_class_command import bll_create_water_class, bll_delete_water_class, bll_update_water_class
 from app.api.water_class.cruds.water_class_crud import dal_get_water_class_by_id, dal_get_all_water_classes
 from utils.context_utils import require_expert
 from typing import Optional, List
@@ -125,4 +126,22 @@ async def get_water_classes_geo(
         })
 
     result = list(grouped.values())
+    return result
+
+@router.put("/{wc_id}", response_model=WaterClassResponse, summary="Обновить точку анализа (эксперт)")
+async def update_water_class(
+    wc_id: int,
+    cmd: WaterClassUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_expert)
+):
+    return await bll_update_water_class(wc_id, cmd, db, current_user)
+
+@router.delete("/{wc_id}", summary="Удалить точку анализа (эксперт)")
+async def delete_water_class(
+    wc_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_expert)
+):
+    result = await bll_delete_water_class(wc_id, db, current_user)
     return result

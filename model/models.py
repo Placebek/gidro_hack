@@ -3,6 +3,7 @@ from sqlalchemy import (
     Integer, 
     Text, 
     Column, 
+    Float,
     Date, 
     ForeignKey, 
     Boolean, 
@@ -84,3 +85,16 @@ class Object(Base):
     resource_type = relationship("ResourceType", back_populates="objects")
     water_type = relationship("WaterType", back_populates="objects")
 
+
+class WaterClass(Base):
+    __tablename__ = "water_classes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    latitude = Column(DECIMAL(10, 6), nullable=True)
+    longitude = Column(DECIMAL(10, 6), nullable=True)
+    description = Column(Text, nullable=True)
+    index = Column(String, nullable=True)
+    parameter = Column(String, nullable=True)
+    unit = Column(String, nullable=True)
+    concentration = Column(Float, nullable=True)
+    background = Column(Float, nullable=True)

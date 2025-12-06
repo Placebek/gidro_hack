@@ -8,6 +8,14 @@ interface ObjectCardModalProps {
   onClose: () => void;
 }
 
+// hexToRgba лучше всего выше компонента
+const hexToRgba = (hex: string, alpha: number) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+};
+
 export function ObjectCardModal({ object, onClose }: ObjectCardModalProps) {
   const conditionColor = getConditionColor(object.technicalCondition);
   const conditionLabel = getConditionLabel(object.technicalCondition);
@@ -32,53 +40,90 @@ export function ObjectCardModal({ object, onClose }: ObjectCardModalProps) {
             <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
               <Droplet className="w-8 h-8" />
             </div>
-            <div className="flex-1">
-              <h2 className="mb-2">{object.name}</h2>
-              <div className="flex items-center gap-2 text-white/80">
-                <MapPin className="w-4 h-4" />
+            <div className="flex-1 ">
+              <h2 className="mb-2 text-2xl font-semibold">{object.name}</h2> {/* увеличил шрифт */}
+              <div className="flex items-center gap-2 text-white/90 text-lg"> {/* увеличил шрифт */}
+                <MapPin className="w-5 h-5" />
                 <span>{object.region}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-6 space-y-4 overflow-y-auto max-h-[calc(90vh-150px)]">
-          <div className="flex flex-wrap gap-2">
-            <Badge style={{ backgroundColor: conditionColor + '20', color: conditionColor, border: `1px solid ${conditionColor}40` }}>
-              <AlertCircle className="w-4 h-4" /> {conditionLabel}
+        <div className="p-6 mt-2 mb-2 space-y-4 overflow-y-auto max-h-[calc(90vh-150px)]">
+          <div className="ml-2 flex flex-wrap gap-4 text-xl"> {/* увеличил шрифт до xl */}
+            <Badge
+              className="rounded-md text-lg "  // немного скруглил и увеличил шрифт
+              style={{
+                backgroundColor: hexToRgba(conditionColor, 0.2), // светлый фон
+                color: conditionColor,                             // текст яркий
+                border: `1px solid ${hexToRgba(conditionColor, 0.4)}` // мягкий контур
+              }}
+            >
+              <AlertCircle className="w-5 h-5" /> {conditionLabel}
             </Badge>
-            <Badge style={{ backgroundColor: priorityInfo.color + '20', color: priorityInfo.color, border: `1px solid ${priorityInfo.color}40` }}>
+
+            <Badge
+              className="rounded-md text-lg"  // немного скруглил и увеличил шрифт
+              style={{
+                backgroundColor: hexToRgba(priorityInfo.color, 0.2),
+                color: priorityInfo.color,
+                border: `1px solid ${hexToRgba(priorityInfo.color, 0.4)}`
+              }}
+            >
               Приоритет: {priorityInfo.level}
             </Badge>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid mt-6 grid-cols-2 gap-4 text-lg"> {/* увеличил шрифт */}
             <div>
-              <div className="text-sm text-gray-500">Тип ресурса</div>
-              <p>{resourceTypeLabels[object.resourceType]}</p>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Тип воды</div>
-              <p>{waterTypeLabels[object.waterType]}</p>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Фауна</div>
-              <p>{object.hasFauna ? 'Да' : 'Нет'}</p>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Дата паспорта</div>
-              <p>{formatDate(object.passportDate)}</p>
-              <p className="text-sm text-gray-400">({passportAge} {passportAge === 1 ? 'год' : passportAge < 5 ? 'года' : 'лет'} назад)</p>
-            </div>
+              <div className="flex items-center gap-2 mb-3 text-gray-500">
+                  <Droplet className="w-4 h-4" />
+                  <span>Тип ресурса</span>
+                </div>
+                <p className="text-lg ml-5">{resourceTypeLabels[object.resourceType]}</p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-gray-500">
+                  <Droplet className="w-4 h-4" />
+                  <span>Тип воды</span>
+                </div>
+                <p className="text-lg ml-5">{waterTypeLabels[object.waterType]}</p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-gray-500">
+                  <Fish className="w-4 h-4" />
+                  <span>Фауна</span>
+                </div>
+                <p className="text-lg ml-5">{object.hasFauna ? 'Да' : 'Нет'}</p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-gray-500">
+                  <Calendar className="w-4 h-4" />
+                  <span>Дата паспорта</span>
+                </div>
+                <p className="text-lg ml-5">{formatDate(object.passportDate)}</p>
+                <p className="text-sm text-gray-400 ml-5">({passportAge} {passportAge === 1 ? 'год' : passportAge < 5 ? 'года' : 'лет'} назад)</p>
+              </div>
+
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button className="flex-1 gap-2">
-              <FileText className="w-4 h-4" />
-              Открыть паспорт
+          <div className="flex gap-3 pt-4 text-lg"> {/* увеличил шрифт */}
+            <Button
+              className="flex-1 gap-2 text-white bg-gradient-to-r from-[#2B80FF] to-[#1E5FCC] hover:from-[#1E70E0] hover:to-[#174BBB]"
+            >
+              <FileText className="w-5 h-5" />
+              Редактировать
             </Button>
-            <Button variant="outline" className="gap-2">
-              <MapPin className="w-4 h-4" />
+
+            <Button
+              variant="outline"
+              className="gap-2 text-white border border-transparent bg-gradient-to-r from-cyan-600 to-blue-800 hover:from-cyan-500 hover:to-blue-700"
+            >
+              <MapPin className="w-5 h-5" />
               На карте
             </Button>
           </div>

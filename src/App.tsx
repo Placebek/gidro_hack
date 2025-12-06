@@ -23,6 +23,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
+          <Route path="/objects" element={<ObjectsPage />} /> 
+          <Route path="/object" element={<WaterResources />} /> 
           <Route
             path="/monitor"
             element={

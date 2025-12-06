@@ -10,7 +10,7 @@ from datetime import date
 
 router = APIRouter()
 
-@router.get("", response_model=List[FeaturesResponse])
+@router.get("", response_model=List[FeaturesResponse], summary="Выводить данные для дашборда")
 async def get_features(
     db: AsyncSession = Depends(get_db),
     cap_mcm_min: Optional[float] = None,

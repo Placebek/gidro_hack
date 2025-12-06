@@ -1,15 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.object.schemas.update import ObjectUpdate
 from database.db import get_db
 from app.api.object.schemas.create import ObjectCreate
 from app.api.object.schemas.response import ObjectResponse, PaginatedResponse, ObjectDetailResponse
 from app.api.object.schemas.filters import ObjectFilters
-from app.api.object.commands.object_command import bll_create_object, bll_get_objects, bll_search_objects
+from app.api.object.commands.object_command import bll_create_object, bll_delete_object, bll_get_objects, bll_search_objects, bll_update_object
 from model.models import Object
 from utils.context_utils import require_expert
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from app.api.object.commands.object_pasport import generate_passport_pdf
 from io import BytesIO
 from urllib.parse import quote
@@ -82,7 +83,7 @@ async def get_object_by_id(
     )
 
 
-@router.get("/{obj_id}/passport-pdf")
+@router.get("/{obj_id}/passport-pdf", summary="Скачать паспорт обьекта")
 async def get_object_passport_pdf(obj_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(Object)
@@ -105,3 +106,21 @@ async def get_object_passport_pdf(obj_id: int, db: AsyncSession = Depends(get_db
             "Content-Disposition": f'attachment; filename="passport_{obj_id}.pdf"; filename*=UTF-8\'\'{encoded}'
         }
     )
+
+@router.put("/{obj_id}", response_model=ObjectResponse, summary="Обновить объект (только эксперты)")
+async def update_object(
+    obj_id: int,
+    cmd: ObjectUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_expert)
+):
+    return await bll_update_object(obj_id, cmd, db, current_user)
+
+@router.delete("/{obj_id}", summary="Удалить объект (только эксперты)")
+async def delete_object(
+    obj_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user = Depends(require_expert)
+):
+    result = await bll_delete_object(obj_id, db, current_user)
+    return result

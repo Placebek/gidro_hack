@@ -2,8 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.object.schemas.create import ObjectCreate
 from app.api.object.schemas.response import ObjectResponse, PaginatedResponse, ObjectListItem
-from app.api.object.cruds.object_crud import dal_create_object, dal_get_objects, dal_search_objects
+from app.api.object.cruds.object_crud import dal_create_object, dal_delete_object, dal_get_objects, dal_search_objects, dal_update_object
 from app.api.object.schemas.filters import ObjectFilters
+from app.api.object.schemas.update import ObjectUpdate
 
 
 async def bll_create_object(
@@ -109,3 +110,38 @@ async def bll_search_objects(filters: ObjectFilters, db) -> PaginatedResponse:
         size=size,
         pages=(total + size - 1) // size
     )
+
+async def bll_update_object(
+    obj_id: int,
+    cmd: ObjectUpdate,
+    db: AsyncSession,
+    current_user  
+) -> ObjectResponse:
+    updated_obj = await dal_update_object(obj_id, cmd.dict(exclude_unset=True), db)
+
+    return ObjectResponse(
+        id=updated_obj.id,
+        name=updated_obj.name,
+        region=updated_obj.region.region,
+        resource_type=updated_obj.resource_type.name if updated_obj.resource_type else None,
+        water_type=updated_obj.water_type.name if updated_obj.water_type else None,
+        fauna=updated_obj.fauna,
+        technical_condition=updated_obj.technical_condition,
+        latitude=float(updated_obj.latitude) if updated_obj.latitude else None,
+        longitude=float(updated_obj.longitude) if updated_obj.longitude else None,
+        danger_level_cm=updated_obj.danger_level_cm,
+        actual_level_cm=updated_obj.actual_level_cm,
+        actual_discharge_m3s=updated_obj.actual_discharge_m3s,
+        water_temperature_C=updated_obj.water_temperature_C,
+        water_object_code=updated_obj.water_object_code,
+        pdf_url=updated_obj.pdf_url or ""
+    )
+
+
+async def bll_delete_object(
+    obj_id: int,
+    db: AsyncSession,
+    current_user
+):
+    await dal_delete_object(obj_id, db)
+    return {"detail": "Объект успешно удалён"}

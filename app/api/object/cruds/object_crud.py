@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, func
 from model.models import Object, Region, ResourceType, WaterType
 from sqlalchemy.orm import selectinload
+from fastapi import HTTPException
 
 
 async def dal_create_object(data: dict, db: AsyncSession) -> Object:
@@ -114,3 +115,35 @@ async def dal_search_objects(filters: dict, db: AsyncSession):
     objects = result.scalars().all()
 
     return objects, total, page, size
+
+async def dal_update_object(obj_id: int, update_data: dict, db: AsyncSession) -> Object:
+    result = await db.execute(
+        select(Object)
+        .options(
+            selectinload(Object.region),
+            selectinload(Object.resource_type),
+            selectinload(Object.water_type)
+        )
+        .where(Object.id == obj_id)
+    )
+    obj = result.scalar_one_or_none()
+    if not obj:
+        raise HTTPException(status_code=404, detail="Объект не найден")
+
+    for key, value in update_data.items():
+        if value is not None:
+            setattr(obj, key, value)
+
+    await db.commit()
+    await db.refresh(obj)
+    return obj
+
+
+async def dal_delete_object(obj_id: int, db: AsyncSession) -> None:
+    result = await db.execute(select(Object).where(Object.id == obj_id))
+    obj = result.scalar_one_or_none()
+    if not obj:
+        raise HTTPException(status_code=404, detail="Объект не найден")
+
+    await db.delete(obj)
+    await db.commit()

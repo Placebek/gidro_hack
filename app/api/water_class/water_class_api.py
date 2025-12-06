@@ -66,7 +66,7 @@ async def get_water_class_by_id(wc_id: int, db: AsyncSession = Depends(get_db)):
 
     return response
 
-@router.get("", response_model=List[WaterClassGeoResponse])
+@router.get("", response_model=List[WaterClassGeoResponse], summary="Выводить классы воды")
 async def get_water_classes_geo(
     db: AsyncSession = Depends(get_db),
     latitude_min: Optional[float] = Query(None, ge=-90, le=90),

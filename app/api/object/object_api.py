@@ -4,7 +4,7 @@ from database.db import get_db
 from app.api.object.schemas.create import ObjectCreate
 from app.api.object.schemas.response import ObjectResponse, PaginatedResponse, ObjectDetailResponse
 from app.api.object.schemas.filters import ObjectFilters
-from app.api.object.commands.object_command import bll_create_object, bll_get_objects
+from app.api.object.commands.object_command import bll_create_object, bll_get_objects, bll_search_objects
 from model.models import Object
 from utils.context_utils import require_expert
 from sqlalchemy import select
@@ -27,7 +27,7 @@ async def create_object(
     return await bll_create_object(cmd, db, current_user)
 
 
-@router.get("/all", response_model=PaginatedResponse)
+@router.get("/all", response_model=PaginatedResponse, summary="Выводить все обьекты (фильтрация, поиск, )")
 async def get_objects(
     filters: ObjectFilters = Depends(),
     db: AsyncSession = Depends(get_db)
@@ -35,7 +35,7 @@ async def get_objects(
     return await bll_get_objects(filters, db)
 
 
-@router.get("/{obj_id}", response_model=ObjectDetailResponse)
+@router.get("/{obj_id}", response_model=ObjectDetailResponse, summary="Выводить обьект по id")
 async def get_object_by_id(
     obj_id: int,
     db: AsyncSession = Depends(get_db),

@@ -75,3 +75,42 @@ async def dal_get_objects(
     objects = result.scalars().all()
 
     return objects, total, page, size
+
+
+async def dal_search_objects(filters: dict, db: AsyncSession):
+    stmt = select(Object).options(
+        selectinload(Object.region),
+        selectinload(Object.resource_type),
+        selectinload(Object.water_type)
+    )
+
+    conditions = []
+
+    if filters.get("name_contains"):
+        search = f"%{filters['name_contains'].strip()}%"
+        conditions.append(Object.name.ilike(search))
+
+    if filters.get("region_id"):
+        conditions.append(Object.region_id == filters["region_id"])
+    if filters.get("resource_type_id"):
+        conditions.append(Object.resource_type_id == filters["resource_type_id"])
+    if filters.get("water_type_id"):
+        conditions.append(Object.water_type_id == filters["water_type_id"])
+    if filters.get("water_object_code"):
+        conditions.append(Object.water_object_code == filters["water_object_code"])
+    if filters.get("only_dangerous"):
+        conditions.append(Object.actual_level_cm >= Object.danger_level_cm)
+
+    if conditions:
+        stmt = stmt.where(and_(*conditions))
+
+    total = await db.scalar(select(func.count()).select_from(stmt.subquery()))
+
+    page = max(1, filters.get("page", 1))
+    size = min(100, max(1, filters.get("size", 20)))
+    stmt = stmt.offset((page - 1) * size).limit(size).order_by(Object.name)
+
+    result = await db.execute(stmt)
+    objects = result.scalars().all()
+
+    return objects, total, page, size

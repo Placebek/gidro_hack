@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Sparkles, Droplets, BarChart3, Shield, MapPin, TriangleAlert } from 'lucide-react';
+import {  Droplets, BarChart3, Shield, MapPin, TriangleAlert } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {

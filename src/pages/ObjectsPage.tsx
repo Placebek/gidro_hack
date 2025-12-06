@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, AlertCircle, Droplet, Beaker, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search,     ChevronLeft, ChevronRight } from 'lucide-react';
 
 import waterQualityData from '../data/waterQuality.json';
 import riverLevelsData from '../data/riverLevels.json';
@@ -167,7 +167,7 @@ export default function ObjectsPage() {
                 {paginated.map((obj) => {
                   const priority = getPriorityLevel(obj);
                   const isQuality = isWaterQuality(obj);
-                  const isRiver = isRiverLevel(obj);
+                //   const isRiver = isRiverLevel(obj);
 
                   return (
                     <tr

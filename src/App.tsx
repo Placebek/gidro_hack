@@ -1,7 +1,5 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import { Waves, Map, AlertTriangle, BarChart3, FileText, Monitor } from 'lucide-react';
-import Login from './components/auth/Login';
-import Home from '../src/pages/Home';
+import { Routes, Route } from 'react-router-dom';
+import { Monitor } from 'lucide-react';
 // import { Monitor } from './pages/Monitor';
 // import { Dams } from './pages/Dams';
 // import { Analytics } from './pages/Analytics';
@@ -9,10 +7,13 @@ import Home from '../src/pages/Home';
 // import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
-import { Header } from './components/main/Header';
+import Header  from './components/main/Header';
 import Footer from './components/main/Footer';
+
 import MapPage from './pages/MapPage';
 import ObjectsPage from './pages/ObjectsPage';
+import Login from './pages/Login';
+import Home from './pages/Home';
 import FloodPredictorsPage from './pages/FloodPredictors';
 
 export default function App() {
@@ -25,7 +26,9 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/objects" element={<ObjectsPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/flood-predictors" element={<FloodPredictorsPage />} />
+
 
           <Route path="/" element={<Home />} />
           <Route

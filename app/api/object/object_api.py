@@ -54,7 +54,25 @@ async def get_object_by_id(
         raise HTTPException(404, "Объект не найден")
 
     return ObjectDetailResponse(
+        id=obj.id,                                      
+        name=obj.name,                                  
         region=obj.region.region,
         resource_type=obj.resource_type.name if obj.resource_type else None,
-        is_dangerous=(obj.actual_level_cm >= obj.danger_level_cm) if obj.danger_level_cm else False
+        water_type=obj.water_type.name if obj.water_type else None,
+        fauna=obj.fauna,
+        technical_condition=obj.technical_condition,
+        passport_date=obj.passport_date,
+        latitude=float(obj.latitude) if obj.latitude else None,
+        longitude=float(obj.longitude) if obj.longitude else None,
+        danger_level_cm=obj.danger_level_cm,
+        actual_level_cm=obj.actual_level_cm,
+        actual_discharge_m3s=obj.actual_discharge_m3s,
+        water_temperature_C=obj.water_temperature_C,
+        water_object_code=obj.water_object_code,
+        pdf_url=obj.pdf_url or "",
+        is_dangerous=(
+            obj.actual_level_cm is not None and
+            obj.danger_level_cm is not None and
+            obj.actual_level_cm >= obj.danger_level_cm
+        )
     )

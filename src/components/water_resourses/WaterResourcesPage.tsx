@@ -33,7 +33,7 @@ export function WaterResources() {
         </div>
 
         {/* Формула расчета */}
-        <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+        <div className="mt-6 mb-6 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
           <div className="flex items-start gap-3">
             <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
             <div>

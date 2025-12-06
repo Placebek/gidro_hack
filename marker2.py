@@ -1,4 +1,3 @@
-# scripts/import_water_quality.py
 import asyncio
 import json
 from decimal import Decimal
@@ -9,7 +8,7 @@ from model.models import WaterClass
 from sqlalchemy import select
 
 
-JSON_PATH = Path("D:/gidro_hack/markersData2_heatmap_clean.json")
+JSON_PATH = Path("D:/gidro_hack/waterQuality.json")
 
 def safe_float(value):
     """Безопасно превращает значение в float или возвращает None"""
@@ -38,6 +37,10 @@ async def import_water_quality():
                 lat = point.get("lat")
                 lng = point.get("lng")
                 desc = point.get("description", "").strip()
+                water_class_val = point.get("water_class")
+                location_info = point.get("location_info", "").strip()
+                purpose_list = point.get("purpose", [])
+                fauna_list = point.get("fauna", [])
                 params = point.get("parameters", [])
 
                 if not lat or not lng:
@@ -50,6 +53,10 @@ async def import_water_quality():
 
                 lat_dec = Decimal(str(lat))
                 lng_dec = Decimal(str(lng))
+
+                # Сохраняем purpose и fauna как строки
+                purpose_str = ", ".join(purpose_list) if purpose_list else None
+                fauna_str = ", ".join(fauna_list) if fauna_list else None
 
                 for param in params:
                     index = str(param.get("index", "")).strip()
@@ -76,6 +83,10 @@ async def import_water_quality():
                         latitude=lat_dec,
                         longitude=lng_dec,
                         description=desc or None,
+                        water_class=water_class_val,
+                        location_info=location_info or None,
+                        purpose=purpose_str,
+                        fauna=fauna_str,
                         index=index or None,
                         parameter=parameter,
                         unit=unit or None,

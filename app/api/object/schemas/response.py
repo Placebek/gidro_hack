@@ -115,6 +115,12 @@ class ObjectFullResponse(BaseModel):
     is_dangerous: bool = False
     history: List[HistoryItem] = []
 
+    @field_validator('actual_discharge_m3s', mode='before')
+    def round_float_to_int(cls, v):
+        if isinstance(v, float):
+            return int(round(v))  # или int(v) если уверен, что дробная часть не нужна
+        return v
+    
     model_config = {
         "from_attributes": True,
         "populate_by_name": True  # ← ВАЖНО! Позволяет использовать alias

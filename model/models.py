@@ -62,7 +62,7 @@ class Region(Base):
     region = Column(String, nullable=False)
 
     objects = relationship("Object", back_populates="region")
-
+    water_classes = relationship("WaterClass", back_populates="region")
 
 class Object(Base):
     __tablename__ = "objects"
@@ -106,6 +106,9 @@ class WaterClass(Base):
     unit = Column(String, nullable=True)
     concentration = Column(Float, nullable=True)
     background = Column(Float, nullable=True)
+    region_id = Column(Integer, ForeignKey("regions.id"), default=1)
+
+    region = relationship("Region", back_populates="water_classes")
 
 
 class Features(Base):

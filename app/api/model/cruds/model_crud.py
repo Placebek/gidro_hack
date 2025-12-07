@@ -1,23 +1,18 @@
-import joblib
-from catboost import CatBoostClassifier
+# app/api/model/cruds/model_crud.py
+
 from pathlib import Path
-import asyncio
-import logging
+from catboost import CatBoostClassifier
 
+MODEL_PATH = Path("D:/gidro_hack/app/api/ai/models/catboost_model.cbm")
 
-MODEL_DIR = Path("D:/gidro_hack/app/api/ai/models")
-MODEL_PATH = MODEL_DIR / "catboost_model.cbm"
-
-MODEL: CatBoostClassifier | None = None
+# Кэшируем модель глобально
+_model = None
 
 async def load_model_async() -> CatBoostClassifier:
-    global MODEL
-    if MODEL is None:
+    global _model
+    if _model is None:
         if not MODEL_PATH.exists():
-            raise FileNotFoundError(f"Модель не найдена по пути: {MODEL_PATH}")
-
-        logging.info(f"Загрузка CatBoost модели: {MODEL_PATH}")
-        loop = asyncio.get_event_loop()
-        MODEL = await loop.run_in_executor(None, joblib.load, str(MODEL_PATH))
-        logging.info("Модель CatBoost успешно загружена")
-    return MODEL
+            raise FileNotFoundError(f"Модель не найдена: {MODEL_PATH}")
+        _model = CatBoostClassifier()
+        _model.load_model(str(MODEL_PATH))  # ← родной формат .cbm — самый надёжный
+    return _model

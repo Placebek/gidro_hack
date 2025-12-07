@@ -55,8 +55,8 @@ export default function MapContainerComponent({
 
   return (
     <MapContainer
-      center={[48.0, 68.0]}
-      zoom={6}
+      center={[49.0, 65.0]}
+      zoom={5}
       scrollWheelZoom={true}
       zoomControl={true}
       style={{ height: '100vh', width: '100%' }}

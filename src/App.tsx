@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import FloodPredictorsPage from './pages/FloodPredictors';
 import { WaterResources } from './components/water_resourses/WaterResourcesPage';
+import { UserProfile } from './pages/UserProfile';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/objects" element={<ObjectsPage />} />
           <Route path="/object" element={<WaterResources />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/flood-predictors" element={<FloodPredictorsPage />} />
 
 

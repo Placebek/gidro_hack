@@ -150,7 +150,7 @@ export const getMarkerColor = (obj: MapObject): string => {
  * W — водоём (если появится)
  */
 const getMarkerLabel = (obj: MapObject): string => {
-    if ("water_class" in obj) return "Q";
+    if ("water_class" in obj) return "W";
     if ("technical_condition" in obj) return "H";
     if ("actual_level_cm" in obj) return "L"; // старый гидропост
     return "W";
@@ -187,7 +187,7 @@ export const getCustomIcon = (obj: MapObject) => {
         <!-- Пульсация при высоком риске -->
         ${
             obj.technical_condition === 5 ||
-            ("water_class" in obj && obj.water_class >= 4)
+            ("water_class" in obj && obj.water_class >= 5)
                 ? `
           <div class="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full 
                       animate-ping"></div>

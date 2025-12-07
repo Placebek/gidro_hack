@@ -69,7 +69,6 @@ export default function MapPage() {
                 region_id: o.region_id,
                 resource_type_id: o.resource_type_id,
                 water_type_id: o.water_type_id,
-                fauna: o.fauna,
                 technical_condition: o.technical_condition,
                 passport_date: o.passport_date,
                 latitude: o.latitude,
@@ -85,6 +84,9 @@ export default function MapPage() {
             const qualityMapped: MapObject[] = (qualityRes || []).map((o: any) => ({
                 id: `quality-${o.id}`,
                 latitude: o.lat,
+                fauna: o.fauna,
+                purpose: o.purpose,
+                water_class: o.water_class,
                 description: o.description,
                 longitude: o.lng,
                 parameters: o.parameters || [],

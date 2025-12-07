@@ -1,9 +1,10 @@
 from http.client import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
-from model.models import WaterClass
+from model.models import Region, WaterClass
 from app.api.water_class.schemas.filter import WaterClassFilter
 from typing import Sequence
+from sqlalchemy.orm import selectinload
 
 
 async def dal_create_water_class(data: dict, db: AsyncSession) -> WaterClass:
@@ -21,8 +22,15 @@ async def dal_get_all_water_classes(
     db: AsyncSession,
     filters: WaterClassFilter
 ) -> Sequence[WaterClass]:
-    query = select(WaterClass)
+    query = select(WaterClass).options(selectinload(WaterClass.region))
     conditions = []
+
+    if filters.region_id is not None:
+        conditions.append(WaterClass.region_id == filters.region_id)
+
+    if filters.region_name:
+        conditions.append(Region.region.ilike(f"%{filters.region_name}%"))
+        query = query.join(Region, WaterClass.region_id == Region.id)
 
     if filters.latitude_min is not None:
         conditions.append(WaterClass.latitude >= filters.latitude_min)
@@ -63,7 +71,6 @@ async def dal_get_all_water_classes(
         query = query.where(and_(*conditions))
 
     query = query.offset(filters.skip).limit(filters.limit).order_by(WaterClass.id)
-
     result = await db.execute(query)
     return result.scalars().all()
 

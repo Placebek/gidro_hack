@@ -78,7 +78,7 @@ export default function Login() {
         <div className="bg-white/95 backdrop-blur-lg p-10 rounded-20 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
           <div className="text-center mb-10">
             <h1 className="text-5xl font-bold bg-linear-to-r from-cyan-600 to-blue-800 bg-clip-text text-transparent">
-              ГидраАтлас
+              ГидроАтлас
             </h1>
             <p className="text-gray-600 mt-3 text-lg">Вход в систему</p>
           </div>
@@ -153,7 +153,7 @@ export default function Login() {
           </form>
 
           <p className="text-center text-xs text-gray-500 mt-8">
-            © 2025 ГидраАтлас • Все права защищены
+            © 2025 ГидроАтлас • Все права защищены
           </p>
         </div>
       </div>

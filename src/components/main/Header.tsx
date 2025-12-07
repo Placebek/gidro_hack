@@ -59,7 +59,7 @@ export default function Header() {
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">ГидраАтлас</h1>
+            <h1 className="text-xl font-bold text-gray-900">ГидроАтлас</h1>
             <p className="text-xs text-gray-500">Водные ресурсы Казахстана</p>
           </div>
         </Link>
@@ -71,9 +71,6 @@ export default function Header() {
           </Link>
           <Link to="/objects" className="text-gray-600 hover:text-cyan-600 transition font-medium">
             Объекты
-          </Link>
-          <Link to="/prioritization" className="text-gray-600 hover:text-cyan-600 transition font-medium">
-            Приоритизация
           </Link>
           <Link to="/flood-predictors" className="text-gray-600 hover:text-cyan-600 transition font-medium">
             Прогноз паводков

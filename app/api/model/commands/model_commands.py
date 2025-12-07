@@ -7,16 +7,23 @@ async def predict_risk_async(features: FeaturesInput) -> PredictionResponse:
     model = await load_model_async()
 
     df = pd.DataFrame([features.dict()])
+
     df = pd.get_dummies(df, columns=["DAM_TYPE", "INSTREAM"], dtype=int)
 
     prediction = model.predict(df)
     proba = model.predict_proba(df)[0]
 
     pred_class = int(prediction[0])
-    pred_proba = float(proba[1])
+    pred_proba = float(proba[1])  
 
     risk_level = "Высокий риск" if pred_class == 1 else "Низкий риск"
-    confidence = "высокая" if pred_proba >= 0.75 or pred_proba <= 0.25 else "средняя"
+
+    if pred_proba >= 0.80 or pred_proba <= 0.20:
+        confidence = "высокая"
+    elif pred_proba >= 0.65 or pred_proba <= 0.35:
+        confidence = "средняя"
+    else:
+        confidence = "низкая"
 
     return PredictionResponse(
         risk_level=risk_level,
